@@ -15,10 +15,24 @@ struct RootView: View {
     @State private var syncing = RecordingSound.log != nil
 
     private let slide = Animation.easeInOut(duration: 0.3)
+    // The side the next block comes in from. It is set one step before `open` changes, so the block
+    // that leaves already uses the new side for its own transition.
+    @State private var enterFrom: Edge = .trailing
+
+    private func step(_ by: Int, from block: Block) {
+        guard let index = blockRegistry.firstIndex(where: { $0.slug == block.slug }) else { return }
+        let target = index + by
+        guard blockRegistry.indices.contains(target) else { return }
+        enterFrom = by > 0 ? .trailing : .leading
+        DispatchQueue.main.async {
+            withAnimation(slide) { open = blockRegistry[target] }
+        }
+    }
 
     var body: some View {
         ZStack {
             GalleryScreen { block in
+                enterFrom = .trailing
                 withAnimation(slide) { open = block }
             }
             .allowsHitTesting(open == nil)
@@ -30,11 +44,15 @@ struct RootView: View {
                     .zIndex(2)
                     .onAppear { RecordingSound.flash { syncing = false } }
             } else if let block = open {
-                DemoScreen(block: block) {
-                    withAnimation(slide) { open = nil }
-                }
+                DemoScreen(block: block, onBack: {
+                    enterFrom = .leading
+                    DispatchQueue.main.async { withAnimation(slide) { open = nil } }
+                }, onStep: { step($0, from: block) })
                 .id(block.slug)
-                .transition(.move(edge: .trailing))
+                .transition(.asymmetric(
+                    insertion: .move(edge: enterFrom),
+                    removal: .move(edge: enterFrom == .trailing ? .leading : .trailing)
+                ))
                 .zIndex(1)
             }
         }
