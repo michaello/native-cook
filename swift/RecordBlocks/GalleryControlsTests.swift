@@ -6,7 +6,7 @@ final class GalleryControlsTests: XCTestCase {
         let app = XCUIApplication()
         app.launchArguments = ["-block", "gold-dune-contours"]
         app.launch()
-        let scrubber = app.otherElements["blocks.scrubber"]
+        let scrubber = app.descendants(matching: .any).matching(identifier: "blocks.scrubber").firstMatch
         XCTAssertTrue(scrubber.waitForExistence(timeout: 10))
         let original = scrubber.frame
         let originalValue = try XCTUnwrap(scrubber.value as? String)
@@ -36,7 +36,7 @@ final class GalleryControlsTests: XCTestCase {
         let app = XCUIApplication()
         app.launchArguments = ["-block", "gold-dune-contours"]
         app.launch()
-        let scrubber = app.otherElements["blocks.scrubber"]
+        let scrubber = app.descendants(matching: .any).matching(identifier: "blocks.scrubber").firstMatch
         XCTAssertTrue(scrubber.waitForExistence(timeout: 10))
         let firstValue = try XCTUnwrap(scrubber.value as? String)
         scrubber.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.8)).tap()
@@ -65,7 +65,7 @@ final class GalleryControlsTests: XCTestCase {
         XCTAssertTrue(heart.waitForExistence(timeout: 10))
         XCTAssertEqual(heart.label, "Remove from favorites")
         // Tapping outside the controls must leave the current demo selected.
-        let scrubber = app.otherElements["blocks.scrubber"]
+        let scrubber = app.descendants(matching: .any).matching(identifier: "blocks.scrubber").firstMatch
         let value = try XCTUnwrap(scrubber.value as? String)
         app.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.7)).tap()
         XCTAssertEqual(scrubber.value as? String, value)
