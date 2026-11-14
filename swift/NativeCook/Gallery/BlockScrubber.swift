@@ -151,6 +151,8 @@ struct BlockScrubber: View {
                         .scrubberGlass(in: Capsule(), interactive: true)
                 }
                 .buttonStyle(.plain)
+                .frame(width: 44, height: 44)
+                .contentShape(Capsule())
                 .accessibilityLabel(isFavorite ? "Remove from favorites" : "Add to favorites")
                 .accessibilityIdentifier("blocks.favorite")
                 .sensoryFeedback(.selection, trigger: isFavorite)
@@ -181,6 +183,9 @@ struct BlockScrubber: View {
             pillFace
                 .rotationEffect(.radians(angle))
         }
+        // TimelineView accepts the whole proposal even when its face has a fixed size.
+        // Bound the timeline itself so its drag cannot intercept the favorite button.
+        .frame(width: Self.pillSize.width, height: Self.pillSize.height)
         .scaleEffect(math != nil || isMoving ? 1.12 : 1)
         .animation(.snappy(duration: 0.2), value: isMoving)
         .contentShape(.rect.inset(by: -14))

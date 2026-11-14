@@ -58,8 +58,13 @@ final class GalleryControlsTests: XCTestCase {
         let heart = app.buttons["blocks.favorite"]
         XCTAssertTrue(heart.waitForExistence(timeout: 10))
         let wasFavorite = heart.label == "Remove from favorites"
+        let control = app.descendants(matching: .any).matching(identifier: "blocks.scrubber").firstMatch
+        let selected = try XCTUnwrap(control.value as? String)
+        XCTAssertEqual(heart.frame.width, 44, accuracy: 1)
         if !wasFavorite { heart.tap() }
-        XCTAssertEqual(heart.label, "Remove from favorites")
+        expectation(for: NSPredicate(format: "label == %@", "Remove from favorites"), evaluatedWith: heart)
+        waitForExpectations(timeout: 5)
+        XCTAssertEqual(control.value as? String, selected)
         app.terminate()
         app.launch()
         XCTAssertTrue(heart.waitForExistence(timeout: 10))
