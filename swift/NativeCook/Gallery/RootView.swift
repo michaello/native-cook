@@ -2,6 +2,19 @@ import SwiftUI
 
 /// The gallery, and over it the block that is open.
 struct RootView: View {
+    // Stable slugs keep favorites attached to the same demo when the registry changes.
+    @AppStorage("blocks.favorites") private var savedFavorites = ""
+
+    private var favorites: Set<String> {
+        Set(savedFavorites.split(separator: "\n").map(String.init))
+    }
+
+    private func toggleFavorite(_ slug: String) {
+        var updated = favorites
+        if !updated.insert(slug).inserted { updated.remove(slug) }
+        savedFavorites = updated.sorted().joined(separator: "\n")
+    }
+
     // `-block <slug>` on the command line opens that block at launch, without a tap.
     @State private var open: Block? = blockRegistry.first {
         $0.slug == UserDefaults.standard.string(forKey: "block")
@@ -19,11 +32,18 @@ struct RootView: View {
     // that leaves already uses the new side for its own transition.
     @State private var enterFrom: Edge = .trailing
 
-    private func step(_ by: Int, from block: Block) {
-        guard let index = blockRegistry.firstIndex(where: { $0.slug == block.slug }) else { return }
-        let target = index + by
-        guard blockRegistry.indices.contains(target) else { return }
-        enterFrom = by > 0 ? .trailing : .leading
+    // The block the scrubber points at while it is dragged. Nil otherwise.
+    @State private var scrubIndex: Int?
+    @State private var scrubberActive = false
+
+    private var openIndex: Int? {
+        guard let open else { return nil }
+        return blockRegistry.firstIndex { $0.slug == open.slug }
+    }
+
+    private func show(_ target: Int) {
+        guard let from = openIndex, target != from, blockRegistry.indices.contains(target) else { return }
+        enterFrom = target > from ? .trailing : .leading
         DispatchQueue.main.async {
             withAnimation(slide) { open = blockRegistry[target] }
         }
@@ -31,7 +51,7 @@ struct RootView: View {
 
     var body: some View {
         ZStack {
-            GalleryScreen { block in
+            GalleryScreen(favorites: favorites) { block in
                 enterFrom = .trailing
                 withAnimation(slide) { open = block }
             }
@@ -44,16 +64,39 @@ struct RootView: View {
                     .zIndex(2)
                     .onAppear { RecordingSound.flash { syncing = false } }
             } else if let block = open {
-                DemoScreen(block: block, onBack: {
+                DemoScreen(block: block, isBackEnabled: !scrubberActive) {
                     enterFrom = .leading
                     DispatchQueue.main.async { withAnimation(slide) { open = nil } }
-                }, onStep: { step($0, from: block) })
+                }
                 .id(block.slug)
                 .transition(.asymmetric(
                     insertion: .move(edge: enterFrom),
                     removal: .move(edge: enterFrom == .trailing ? .leading : .trailing)
                 ))
                 .zIndex(1)
+            }
+
+            if let scrub = scrubIndex, blockRegistry.indices.contains(scrub) {
+                BlockScrubPreview(
+                    block: blockRegistry[scrub],
+                    position: "\(scrub + 1) of \(blockRegistry.count)"
+                )
+                .zIndex(2)
+            }
+
+            // Not while recording: the RecordBlocks tests film the block alone.
+            if open != nil, !syncing, !recording, let index = openIndex {
+                BlockScrubber(
+                    currentIndex: index,
+                    count: blockRegistry.count,
+                    isFavorite: favorites.contains(blockRegistry[index].slug),
+                    onToggleFavorite: { toggleFavorite(blockRegistry[index].slug) },
+                    onInteraction: { scrubberActive = $0 },
+                    label: { "\($0 + 1) of \(blockRegistry.count) · \(blockRegistry[$0].name)" },
+                    onScrub: { scrubIndex = $0 },
+                    onCommit: { show($0) }
+                )
+                .zIndex(3)
             }
         }
         .background(GalleryColors.background.ignoresSafeArea())

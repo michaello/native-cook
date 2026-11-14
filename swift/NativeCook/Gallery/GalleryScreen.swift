@@ -2,6 +2,8 @@ import SwiftUI
 
 /// Every block in this app, by category. A row opens the block on its own screen.
 struct GalleryScreen: View {
+    var favorites: Set<String> = []
+    @State private var favoritesOnly = false
     let onOpen: (Block) -> Void
 
     private struct Category: Identifiable {
@@ -19,6 +21,13 @@ struct GalleryScreen: View {
         }
     }
 
+    private var visibleCategories: [Category] {
+        Self.categories.compactMap { category in
+            let blocks = category.blocks.filter { !favoritesOnly || favorites.contains($0.slug) }
+            return blocks.isEmpty ? nil : Category(title: category.title, blocks: blocks)
+        }
+    }
+
     private static let count = "\(blockRegistry.count) \(blockRegistry.count == 1 ? "block" : "blocks")"
 
     var body: some View {
@@ -30,7 +39,14 @@ struct GalleryScreen: View {
                     empty
                 }
 
-                ForEach(Self.categories) { category in
+                if favoritesOnly && visibleCategories.isEmpty {
+                    Text("No favorites yet")
+                        .foregroundStyle(GalleryColors.textMuted)
+                        .padding(.horizontal, 8)
+                        .padding(.top, 32)
+                }
+
+                ForEach(visibleCategories) { category in
                     Text(category.title)
                         .font(.system(size: 12, design: .monospaced))
                         .textCase(.uppercase)
@@ -68,6 +84,13 @@ struct GalleryScreen: View {
                 .font(.system(size: 12, design: .monospaced))
                 .textCase(.uppercase)
                 .foregroundStyle(GalleryColors.textMuted)
+            Picker("Show blocks", selection: $favoritesOnly) {
+                Text("All").tag(false)
+                Text("Favorites").tag(true)
+            }
+            .pickerStyle(.segmented)
+            .accessibilityIdentifier("blocks.filter")
+            .padding(.top, 12)
         }
         .padding(.horizontal, 8)
         .padding(.bottom, 8)
@@ -106,6 +129,12 @@ struct GalleryScreen: View {
                 }
             }
             .frame(maxWidth: .infinity, alignment: .leading)
+
+            if favorites.contains(block.slug) {
+                Image(systemName: "heart.fill")
+                    .foregroundStyle(.pink)
+                    .accessibilityLabel("Favorite")
+            }
 
             Image(systemName: "chevron.right")
                 .font(.system(size: 14, weight: .semibold))
