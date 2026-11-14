@@ -9,7 +9,7 @@ final class GalleryControlsTests: XCTestCase {
         let scrubber = app.otherElements["blocks.scrubber"]
         XCTAssertTrue(scrubber.waitForExistence(timeout: 10))
         let original = scrubber.frame
-        let originalValue = scrubber.value as? String
+        let originalValue = try XCTUnwrap(scrubber.value as? String)
         let targetX = original.midX > app.frame.midX ? 25.0 : app.frame.width - 25
         let start = scrubber.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.5))
         let target = app.coordinate(withNormalizedOffset: .zero)
@@ -38,15 +38,15 @@ final class GalleryControlsTests: XCTestCase {
         app.launch()
         let scrubber = app.otherElements["blocks.scrubber"]
         XCTAssertTrue(scrubber.waitForExistence(timeout: 10))
-        let firstValue = scrubber.value as? String
+        let firstValue = try XCTUnwrap(scrubber.value as? String)
         scrubber.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.8)).tap()
-        let changed = NSPredicate(format: "value != %@", firstValue ?? "")
+        let changed = NSPredicate(format: "value != %@", firstValue)
         expectation(for: changed, evaluatedWith: scrubber)
         waitForExpectations(timeout: 5)
-        let secondValue = scrubber.value as? String
+        let secondValue = try XCTUnwrap(scrubber.value as? String)
         let start = scrubber.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.5))
         start.press(forDuration: 0.05, thenDragTo: start.withOffset(CGVector(dx: 0, dy: 90)))
-        expectation(for: NSPredicate(format: "value != %@", secondValue ?? ""), evaluatedWith: scrubber)
+        expectation(for: NSPredicate(format: "value != %@", secondValue), evaluatedWith: scrubber)
         waitForExpectations(timeout: 5)
         XCTAssertTrue(app.buttons["blocks.favorite"].isHittable)
     }
@@ -66,7 +66,7 @@ final class GalleryControlsTests: XCTestCase {
         XCTAssertEqual(heart.label, "Remove from favorites")
         // Tapping outside the controls must leave the current demo selected.
         let scrubber = app.otherElements["blocks.scrubber"]
-        let value = scrubber.value as? String
+        let value = try XCTUnwrap(scrubber.value as? String)
         app.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.7)).tap()
         XCTAssertEqual(scrubber.value as? String, value)
         app.terminate()
@@ -75,7 +75,7 @@ final class GalleryControlsTests: XCTestCase {
         let filter = app.segmentedControls["blocks.filter"]
         XCTAssertTrue(filter.waitForExistence(timeout: 10))
         filter.buttons["Favorites"].tap()
-        let demo = app.buttons.containing(.staticText, identifier: "Gold Dune Contours").firstMatch
+        let demo = app.buttons.matching(NSPredicate(format: "label BEGINSWITH %@", "Gold Dune Contours")).firstMatch
         XCTAssertTrue(demo.waitForExistence(timeout: 5))
         demo.tap()
         XCTAssertTrue(heart.waitForExistence(timeout: 10))
