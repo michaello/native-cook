@@ -76,7 +76,9 @@ final class ReferenceDraftTests: XCTestCase {
         copy.tap()
         XCTAssertEqual(copy.label, "Markdown copied")
         app.buttons["draft.share"].tap()
-        let filename = app.staticTexts.matching(NSPredicate(format: "label CONTAINS %@", "Native Cook Reference")).firstMatch
+        let filename = app.descendants(matching: .any)
+            .matching(NSPredicate(format: "label BEGINSWITH %@", "Native Cook Reference"))
+            .firstMatch
         XCTAssertTrue(filename.waitForExistence(timeout: 10))
     }
 
