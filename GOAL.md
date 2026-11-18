@@ -44,8 +44,8 @@ awk -F '|' '$2 ~ /^ REF-[0-9]+ $/ {gsub(/^ +| +$/, "", $3); count[$3]++} END {n=
 
 | ID | Status | Proof |
 |---|---|---|
-| REF-01 | Open | |
-| REF-02 | Open | |
+| REF-01 | Done | 666c4549. Clean clone under /tmp/native-cook-lookup.1QeUJh. Two generations matched each other and tracked JSON. All 825 pinned paths matched declared SwiftUI types. Exact first, duplicate rejected, no-hit exit 1. /tmp/native-cook-reference-proof/catalog.log |
+| REF-02 | In Progress | Capturing and validating the starter set in simulator recording mode. |
 | REF-03 | Open | |
 | REF-04 | Open | |
 | REF-05 | Open | |
