@@ -44,15 +44,15 @@ awk -F '|' '$2 ~ /^ REF-[0-9]+ $/ {gsub(/^ +| +$/, "", $3); count[$3]++} END {n=
 
 | ID | Status | Proof |
 |---|---|---|
-| REF-01 | Done | 666c4549. Clean clone under /tmp/native-cook-lookup.1QeUJh. Two generations matched each other and tracked JSON. All 825 pinned paths matched declared SwiftUI types. Exact first, duplicate rejected, no-hit exit 1. /tmp/native-cook-reference-proof/catalog.log |
-| REF-02 | Done | iPhone 16 Pro Max iOS 26.2 recording launch using unchanged starter demo sources. Four posters per theme, 15 JPEGs decoded at 331×720, three distinct motion pairs with triggers. /tmp/native-cook-starter-captures.log, /tmp/native-cook-starter-verification.log, /tmp/native-cook-starter-bundle-decode.log, /tmp/native-cook-starter-image-ocr.log |
-| REF-03 | Done | Five ReferenceExploreTests passed with all 825 demos on iPhone 18 Pro iOS 27.3. Verified three visual briefs, exact poster-free launch, scoped and global order, single-result boundaries, and clean recording launch. Bundled data only. /tmp/native-cook-reference-proof/gallery.log, /tmp/native-cook-reference-proof/simulator-media.log |
-| REF-04 | In Progress | Draft pilot passed on iOS 26.0. Repairing the iOS 27.3 XCTest drag selector before rerunning the full proof. |
-| REF-05 | Open | |
-| REF-06 | Open | |
-| REF-07 | Open | |
-| REF-08 | Open | |
-| REF-09 | Open | |
+| REF-01 | Done | Clean clone /tmp/native-cook-lookup.1QeUJh. Two generations matched each other and tracked JSON. All 825 slugs and pinned paths matched the registry and SwiftUI types. Exact first, duplicate rejected, no-hit exit 1. /tmp/native-cook-reference-proof/catalog.log and catalog-final.log |
+| REF-02 | Done | iPhone 16 Pro Max iOS 26.2 recording launch using unchanged starter demo sources. Four posters per theme, 15 JPEGs decoded at 331×720, three distinct motion pairs with triggers. /tmp/native-cook-starter-captures.log, /tmp/native-cook-starter-verification.log, /tmp/native-cook-starter-image-ocr.log and /tmp/native-cook-reference-proof/simulator-media.log |
+| REF-03 | Done | Five ReferenceExploreTests passed with all 825 demos on iPhone 18 Pro iOS 27.3. Three visual briefs, exact poster-free launch, scoped and global order, single-result boundaries and clean recording launch. Bundled local data. /tmp/native-cook-reference-proof/GalleryFinal.xcresult |
+| REF-04 | Done | Two ReferenceDraftTests passed on iPhone 18 Pro iOS 27.3. Three examples, duplicate prevention, native reorder and scoped playback, direction and takeaway after relaunch, independent favorites, missing removal and empty relaunch. /tmp/native-cook-reference-proof/GalleryFinal.xcresult |
+| REF-05 | Done | Native Share ZIP and copied Markdown from final full simulator run. Fresh extraction and clean source checkout at 54eeb3e1 resolved three cues and source declarations, four images, motion triggers, and one poster-free example. unzip -t and byte parity passed. /tmp/native-cook-reference-proof/pilot/verify.log and /tmp/native-cook-reference-proof/pilot/shared/Native Cook Reference.zip |
+| REF-06 | Done | 3e93b56ee0629b14347dc4a8de7cd4a8d41a3cd9. Ten gallery and draft cases plus one Gold Dune recorder test passed with zero skips on iPhone 18 Pro iOS 27.3. Direct launch and gallery exclusion passed. Export verified 33.03 s H.264 at 1206×2622 with distinct decoded frames. /tmp/native-cook-reference-proof/GalleryFinal.xcresult and /tmp/native-cook-reference-proof/recorder/verification.log |
+| REF-07 | Done | Same tested revision. Signed generic iOS build com.test.nativecook, Apple Development team AS5AAW6A59, deployment minimum iOS 17.0. Strict deep signature verification passed. /tmp/native-cook-reference-proof/device-final-build.log and device-final-codesign.log |
+| REF-08 | Done | Mike’s physical iPhone 16 Pro Max was connected. Previous app process was already stopped. Installed in place, launched PID 11771 and matched its executable to installed bundle 24FEBE95-9871-4DB8-9C5B-4A566BC8A4C4. /tmp/native-cook-reference-proof/device-runtime-match.log, device-install.json and device-launch.json |
+| REF-09 | Done | Pushed and independently verified 3e93b56ee0629b14347dc4a8de7cd4a8d41a3cd9 at origin refs/heads/aesthetic-reference. /tmp/native-cook-reference-proof/pushed-implementation.log. Final proof commit and ancestry check in /tmp/native-cook-reference-proof/pushed-final.log |
 </work_queue>
 
 <workflow>
