@@ -1,0 +1,104 @@
+{
+  "spectral-capsule-spin": {
+    "theme": "Layered depth",
+    "purpose": "Loading",
+    "fullScreen": true,
+    "keywords": ["glass", "refraction", "projected 3D", "caustics"],
+    "cue": "Use foreshortened end-cap rings and a sharp cool rim to read the capsule's depth. Let warm caustics appear as an end turns toward the viewer.",
+    "poster": "ref-spectral-capsule-spin.jpg"
+  },
+  "gold-dune-contours": {
+    "theme": "Layered depth",
+    "purpose": "Decoration",
+    "fullScreen": true,
+    "keywords": ["layered landscape", "occlusion", "topographic lines", "light sweep", "relief"],
+    "cue": "Overlap fine warm contours so close ridges hide distant ones. Sweep a soft highlight across the terrain to make the layers separate.",
+    "poster": "ref-gold-dune-contours.jpg"
+  },
+  "plasma-squircle-charge": {
+    "theme": "Layered depth",
+    "purpose": "Action",
+    "fullScreen": true,
+    "keywords": ["smoked glass", "reflection", "hold", "electric bloom"],
+    "cue": "Keep the smoked-glass hub dark at rest. During the hold send sparks along the outline, then let violet bloom catch the hub's reflection as the room cards turn on.",
+    "poster": "ref-plasma-squircle-charge.jpg"
+  },
+  "twist-glass-stack": {
+    "theme": "Layered depth",
+    "purpose": "Loading",
+    "fullScreen": true,
+    "keywords": ["layered glass", "frosted", "squircle", "twist", "loading illustration"],
+    "cue": "Keep the five thick glass plates legible in a lilac-to-blue stack. Increase both relative rotation and spacing during the twist, then unwind through alignment and settle.",
+    "poster": "ref-twist-glass-stack.jpg",
+    "motionFrame": "ref-twist-glass-stack-motion.jpg",
+    "trigger": "Drag sideways to fan the plates apart. Release to hold the twist briefly and then unwind."
+  },
+  "lava-lamp-loader": {
+    "theme": "Tactile materials",
+    "purpose": "Loading",
+    "fullScreen": true,
+    "keywords": ["viscous", "wax", "chrome", "ambient glow", "walnut"],
+    "cue": "Use a narrow neck on each wax blob just before it breaks away. The rising coral wax and sinking crimson wax both sit behind bright glass edges.",
+    "poster": "ref-lava-lamp-loader.jpg"
+  },
+  "candy-knob-toggle": {
+    "theme": "Tactile materials",
+    "purpose": "Settings",
+    "fullScreen": true,
+    "keywords": ["glossy candy", "gummy", "tinted glass", "toggle"],
+    "cue": "Match the tint of the clear switch and its page to the candy inside. Keep the gummy ring translucent and give the donut matte frosting to differentiate the states.",
+    "poster": "ref-candy-knob-toggle.jpg"
+  },
+  "depth-button": {
+    "theme": "Tactile materials",
+    "purpose": "Action",
+    "fullScreen": false,
+    "keywords": ["physical press", "sidewall", "button grid", "travel"],
+    "cue": "Give each button a clearly darker sidewall. Pressing should close that gap while the face keeps its shape and the group stays still.",
+    "poster": "ref-depth-button.jpg"
+  },
+  "tape-measure-picker": {
+    "theme": "Tactile materials",
+    "purpose": "Input",
+    "fullScreen": true,
+    "keywords": ["tactile scrubbing", "detents", "rubber", "spring", "mechanical picker"],
+    "cue": "Anchor a red hairline while the lacquered tape and tick marks move behind it. Couple tape travel to the mechanical readout and scale the free-end wobble with release speed.",
+    "poster": "ref-tape-measure-picker.jpg",
+    "motionFrame": "ref-tape-measure-picker-motion.jpg",
+    "trigger": "Drag the tape to extend it past the hairline. Release to snap to the nearest centimetre, or flick left to make it reel in."
+  },
+  "cipher-seam": {
+    "theme": "Reveals",
+    "purpose": "Decoration",
+    "fullScreen": true,
+    "keywords": ["reveal", "mask", "tokenization", "light seam", "particles"],
+    "cue": "Move the card through one stationary violet seam. Clip the printed face and token matrix on opposite sides, and intensify the seam only while the card is crossing.",
+    "poster": "ref-cipher-seam.jpg",
+    "motionFrame": "ref-cipher-seam-motion.jpg",
+    "trigger": "Drag across the hero to scrub the card through the seam, or tap the white Talk to an Expert pill below the copy to replay."
+  },
+  "glass-split-button": {
+    "theme": "Reveals",
+    "purpose": "Action",
+    "fullScreen": true,
+    "keywords": ["reveal", "capture actions", "frosted glass", "spring"],
+    "cue": "Compress the frosted disc to a small pill before it springs wide. Reveal Photo, Note and Voice inside the expanded bar after it has room for them.",
+    "poster": "ref-glass-split-button.jpg"
+  },
+  "popcorn-pop-button": {
+    "theme": "Reveals",
+    "purpose": "Action",
+    "fullScreen": true,
+    "keywords": ["reveal", "long press", "squash", "copper", "progress"],
+    "cue": "Translate hold progress into warmer copper, a filling thermometer arc and jittering kernels. Stagger each pop and lift the glass lid only after the pile grows.",
+    "poster": "ref-popcorn-pop-button.jpg"
+  },
+  "share-reveal-button": {
+    "theme": "Reveals",
+    "purpose": "Action",
+    "fullScreen": false,
+    "keywords": ["reveal", "sliding cover", "share tray", "disclosure"],
+    "cue": "Slide the white cover aside inside a stationary indigo tray. Keep a narrow tab visible as a handle once the four actions are exposed.",
+    "poster": "ref-share-reveal-button.jpg"
+  }
+}
