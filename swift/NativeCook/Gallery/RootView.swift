@@ -1,9 +1,10 @@
 import SwiftUI
 
-/// The gallery, and over it the block that is open.
+/// The gallery, and over it the ordered comparison session that is open.
 struct RootView: View {
     // Stable slugs keep favorites attached to the same demo when the registry changes.
     @AppStorage("blocks.favorites") private var savedFavorites = ""
+    @State private var draft = ReferenceDraftStore()
 
     private var favorites: Set<String> {
         Set(savedFavorites.split(separator: "\n").map(String.init))
@@ -15,96 +16,118 @@ struct RootView: View {
         savedFavorites = updated.sorted().joined(separator: "\n")
     }
 
-    // `-block <slug>` on the command line opens that block at launch, without a tap.
-    @State private var open: Block? = blockRegistry.first {
-        $0.slug == UserDefaults.standard.string(forKey: "block")
+    private struct Session {
+        let blocks: [Block]
+        var index: Int
+        var current: Block { blocks[index] }
+
+        init?(slug: String?, in blocks: [Block]) {
+            guard let index = blocks.firstIndex(where: { $0.slug == slug }) else { return nil }
+            self.blocks = blocks
+            self.index = index
+        }
+
+        func label(at index: Int) -> String {
+            "\(index + 1) of \(blocks.count) · \(blocks[index].name)"
+        }
     }
-    // `-recording 1` as well: the RecordBlocks tests pass it, so a demo that does not hide the
-    // status bar itself is recorded without the clock and the battery.
+
+    // Direct launch takes the full registry and recording leaves only the demo on screen.
+    @State private var session = Session(slug: UserDefaults.standard.string(forKey: "block"), in: blockRegistry)
     private let recording = UserDefaults.standard.bool(forKey: "recording")
-    // While the RecordBlocks tests take the sound too, the block opens only after the sync flash
-    // (RecordingSound.swift), on a black screen once the launch transition is over, so the flash is
-    // a clean cut in the video and never inside a loop the site keeps.
     @State private var syncing = RecordingSound.log != nil
 
     private let slide = Animation.easeInOut(duration: 0.3)
-    // The side the next block comes in from. It is set one step before `open` changes, so the block
-    // that leaves already uses the new side for its own transition.
     @State private var enterFrom: Edge = .trailing
-
-    // The block the scrubber points at while it is dragged. Nil otherwise.
     @State private var scrubIndex: Int?
     @State private var scrubberActive = false
 
-    private var openIndex: Int? {
-        guard let open else { return nil }
-        return blockRegistry.firstIndex { $0.slug == open.slug }
+    private func show(_ target: Int) {
+        guard var next = session, target != next.index, next.blocks.indices.contains(target) else { return }
+        enterFrom = target > next.index ? .trailing : .leading
+        next.index = target
+        DispatchQueue.main.async {
+            withAnimation(slide) { session = next }
+        }
     }
 
-    private func show(_ target: Int) {
-        guard let from = openIndex, target != from, blockRegistry.indices.contains(target) else { return }
-        enterFrom = target > from ? .trailing : .leading
-        DispatchQueue.main.async {
-            withAnimation(slide) { open = blockRegistry[target] }
-        }
+    private func close() {
+        enterFrom = .leading
+        scrubIndex = nil
+        DispatchQueue.main.async { withAnimation(slide) { session = nil } }
     }
 
     var body: some View {
         ZStack {
-            GalleryScreen(favorites: favorites) { block in
-                enterFrom = .trailing
-                withAnimation(slide) { open = block }
+            if !recording || session == nil {
+                GalleryScreen(favorites: favorites, draft: draft) { block, blocks in
+                    enterFrom = .trailing
+                    withAnimation(slide) { session = Session(slug: block.slug, in: blocks) }
+                }
+                .allowsHitTesting(session == nil)
+                .accessibilityHidden(session != nil)
             }
-            .allowsHitTesting(open == nil)
-            .accessibilityHidden(open != nil)
 
             if syncing {
                 Color.black
                     .ignoresSafeArea()
                     .zIndex(2)
                     .onAppear { RecordingSound.flash { syncing = false } }
-            } else if let block = open {
-                DemoScreen(block: block, isBackEnabled: !scrubberActive) {
-                    enterFrom = .leading
-                    DispatchQueue.main.async { withAnimation(slide) { open = nil } }
-                }
-                .id(block.slug)
-                .transition(.asymmetric(
-                    insertion: .move(edge: enterFrom),
-                    removal: .move(edge: enterFrom == .trailing ? .leading : .trailing)
-                ))
-                .zIndex(1)
+            } else if let session {
+                DemoScreen(block: session.current, isBackEnabled: !scrubberActive, onBack: close)
+                    .id(session.current.slug)
+                    .transition(.asymmetric(
+                        insertion: .move(edge: enterFrom),
+                        removal: .move(edge: enterFrom == .trailing ? .leading : .trailing)
+                    ))
+                    .zIndex(1)
             }
 
-            if let scrub = scrubIndex, blockRegistry.indices.contains(scrub) {
+            if let session, let scrub = scrubIndex, session.blocks.indices.contains(scrub) {
                 BlockScrubPreview(
-                    block: blockRegistry[scrub],
-                    position: "\(scrub + 1) of \(blockRegistry.count)"
+                    block: session.blocks[scrub],
+                    position: "\(scrub + 1) of \(session.blocks.count)"
                 )
                 .zIndex(2)
             }
 
-            // Not while recording: the RecordBlocks tests film the block alone.
-            if open != nil, !syncing, !recording, let index = openIndex {
+            if let session, !syncing, !recording {
                 BlockScrubber(
-                    currentIndex: index,
-                    count: blockRegistry.count,
-                    isFavorite: favorites.contains(blockRegistry[index].slug),
-                    onToggleFavorite: { toggleFavorite(blockRegistry[index].slug) },
+                    currentIndex: session.index,
+                    count: session.blocks.count,
+                    isFavorite: favorites.contains(session.current.slug),
+                    onToggleFavorite: { toggleFavorite(session.current.slug) },
                     onInteraction: { scrubberActive = $0 },
-                    label: { "\($0 + 1) of \(blockRegistry.count) · \(blockRegistry[$0].name)" },
+                    label: session.label(at:),
                     onScrub: { scrubIndex = $0 },
                     onCommit: { show($0) }
                 )
                 .zIndex(3)
+
+                VStack {
+                    HStack {
+                        Button(action: close) {
+                            Image(systemName: "chevron.left")
+                                .font(.subheadline.weight(.semibold))
+                                .foregroundStyle(.white)
+                                .frame(width: 44, height: 44)
+                                .background(.black.opacity(0.65), in: Circle())
+                        }
+                        .buttonStyle(.plain)
+                        .accessibilityLabel("Back to gallery")
+                        .accessibilityIdentifier("blocks.back")
+                        Spacer()
+                    }
+                    Spacer()
+                }
+                .padding(.horizontal, 8)
+                .zIndex(3)
             }
         }
         .background(GalleryColors.background.ignoresSafeArea())
-        // The gallery is dark. An open block chooses for itself, status bar included.
-        .preferredColorScheme(open == nil ? .dark : nil)
-        // Only while recording: a modifier here, even .statusBarHidden(false), overrides the block's
-        // own choice (a block may hide the clock under a banner that covers it).
-        .modifier(RecordingStatusBar(hidden: recording && open != nil, active: recording))
+        .preferredColorScheme(session == nil ? .dark : nil)
+        // A status bar modifier would otherwise override demos that choose their own visibility.
+        .modifier(RecordingStatusBar(hidden: recording && session != nil, active: recording))
     }
 }
 
