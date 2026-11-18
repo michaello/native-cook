@@ -13,27 +13,27 @@ struct ReferenceBrief {
             lines += ["", "## Target direction", "", Self.quote(direction)]
         }
 
-        lines += ["", "SwiftUI source revision: `\(ReferenceCatalog.sourceRevision)`", "", "## Examples"]
+        lines += ["", "**SwiftUI source revision** `\(ReferenceCatalog.sourceRevision)`", "", "## Examples"]
 
         for (index, entry) in draft.entries.enumerated() {
             let example = ReferenceCatalog.bySlug[entry.slug]
             let starter = ReferenceCatalog.starters[entry.slug]
-            lines += ["", "### \(index + 1). \(Self.escape(example?.name ?? entry.slug))", "", "Slug: `\(entry.slug)`"]
+            lines += ["", "### \(index + 1). \(Self.escape(example?.name ?? entry.slug))", "", "**Slug** `\(entry.slug)`"]
 
             if let example {
-                lines += ["", "Source: `\(example.sourcePath)`"]
+                lines += ["", "**Source** `\(example.sourcePath)`"]
                 if let cue = Self.nonempty(starter?.cue ?? example.spec) {
-                    lines += ["", "Cue: \(Self.escape(cue))"]
+                    lines += ["", "**Cue** \(Self.escape(cue))"]
                 }
                 if let trigger = starter?.trigger {
-                    lines += ["", "Trigger: \(Self.escape(trigger))"]
+                    lines += ["", "**Trigger** \(Self.escape(trigger))"]
                 }
             } else {
                 lines += ["", "This demo is unavailable in the current SwiftUI catalog."]
             }
 
             if let takeaway = Self.nonempty(entry.takeaway) {
-                lines += ["", "Takeaway:", "", Self.quote(takeaway)]
+                lines += ["", "**Takeaway**", "", Self.quote(takeaway)]
             }
 
             if let starter {
