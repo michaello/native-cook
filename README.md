@@ -22,6 +22,17 @@ kotlin/app/src/main/java/com/ngocdevv/nativecook/blocks/buttons/holdtoconfirm/Ho
 
 The file named above is the block's demo: what the gallery opens. Everything else the block needs sits next to it, in the same folder. Helpers shared by several blocks are in `react-native/src/shared`, `swift/NativeCook/Shared` and the Kotlin app's `shared` package.
 
+## Search SwiftUI demos offline
+
+From a clone, run `python3 scripts/swift-reference.py lookup radar-friend-finder`.
+The command searches the slug, name, category, and description and prints the
+repository-relative SwiftUI entry path for each match. Exact slugs appear first.
+Use quotes around a multiword query, such as `lookup "glass stack"`.
+
+Run `python3 scripts/swift-reference.py generate` to rebuild the checked-in catalog
+from the SwiftUI registry and tracked demo files. If demo sources change, update
+the script's pinned source revision to a commit that contains them before regenerating.
+
 ## Run the apps
 
 **React Native**
