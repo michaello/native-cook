@@ -46,8 +46,8 @@ awk -F '|' '$2 ~ /^ REF-[0-9]+ $/ {gsub(/^ +| +$/, "", $3); count[$3]++} END {n=
 |---|---|---|
 | REF-01 | Done | 666c4549. Clean clone under /tmp/native-cook-lookup.1QeUJh. Two generations matched each other and tracked JSON. All 825 pinned paths matched declared SwiftUI types. Exact first, duplicate rejected, no-hit exit 1. /tmp/native-cook-reference-proof/catalog.log |
 | REF-02 | Done | iPhone 16 Pro Max iOS 26.2 recording launch using unchanged starter demo sources. Four posters per theme, 15 JPEGs decoded at 331×720, three distinct motion pairs with triggers. /tmp/native-cook-starter-captures.log, /tmp/native-cook-starter-verification.log, /tmp/native-cook-starter-bundle-decode.log, /tmp/native-cook-starter-image-ocr.log |
-| REF-03 | In Progress | Testing the three search briefs and scoped/direct navigation on the simulator. |
-| REF-04 | Open | |
+| REF-03 | Done | Five ReferenceExploreTests passed with all 825 demos on iPhone 18 Pro iOS 27.3. Verified three visual briefs, exact poster-free launch, scoped and global order, single-result boundaries, and clean recording launch. Bundled data only. /tmp/native-cook-reference-proof/gallery.log, /tmp/native-cook-reference-proof/simulator-media.log |
+| REF-04 | In Progress | Draft pilot passed on iOS 26.0. Repairing the iOS 27.3 XCTest drag selector before rerunning the full proof. |
 | REF-05 | Open | |
 | REF-06 | Open | |
 | REF-07 | Open | |
