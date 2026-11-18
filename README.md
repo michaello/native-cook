@@ -25,9 +25,10 @@ The file named above is the block's demo: what the gallery opens. Everything els
 ## Search SwiftUI demos offline
 
 From a clone, run `python3 scripts/swift-reference.py lookup radar-friend-finder`.
-The command searches the slug, name, category, and description and prints the
-repository-relative SwiftUI entry path for each match. Exact slugs appear first.
-Use quotes around a multiword query, such as `lookup "glass stack"`.
+The command searches the slug, name, category, description, and curated starter
+cues. It prints the repository-relative SwiftUI entry path for each match. Exact
+slugs appear first. Use quotes around a multiword query, such as
+`lookup "tactile scrubbing"`.
 
 Run `python3 scripts/swift-reference.py generate` to rebuild the checked-in catalog
 from the SwiftUI registry and tracked demo files. If demo sources change, update

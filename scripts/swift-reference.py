@@ -11,6 +11,7 @@ import sys
 ROOT = Path(__file__).resolve().parents[1]
 GALLERY = ROOT / "swift/NativeCook/Gallery"
 CATALOG = GALLERY / "ReferenceCatalog.json"
+STARTERS = GALLERY / "ReferenceStarters.json"
 BLOCKS = "swift/NativeCook/Blocks"
 SOURCE_REVISION = "54eeb3e1c4f5695e1d95160cbf265cc958f47810"
 
@@ -63,17 +64,24 @@ def generate():
     return dict(sourceRevision=SOURCE_REVISION, entries=list(entries.values()))
 
 
-def lookup(entries, query):
+def lookup(entries, starters, query):
     query = query.strip().casefold()
     terms = re.findall(r"\w+", query)
     if not terms:
         return []
     result = []
     for entry in entries:
-        fields = " ".join(entry[key] for key in ("slug", "name", "category", "spec")).casefold()
+        starter = starters.get(entry["slug"], {})
+        aliases = [keyword.casefold() for keyword in starter.get("keywords", [])]
+        fields = " ".join([
+            *(entry[key] for key in ("slug", "name", "category", "spec")),
+            *(starter.get(key, "") for key in ("theme", "purpose", "cue", "trigger")),
+            *aliases,
+        ]).casefold()
         if entry["slug"] == query or all(term in fields for term in terms):
-            result.append(entry)
-    return sorted(result, key=lambda entry: entry["slug"] != query)
+            rank = 0 if entry["slug"] == query else 1 if query in aliases else 2
+            result.append((rank, entry))
+    return [entry for _, entry in sorted(result, key=lambda match: match[0])]
 
 
 def main():
@@ -89,7 +97,8 @@ def main():
         args.output.write_text(output, encoding="utf-8")
         return
     catalog = json.loads(CATALOG.read_text(encoding="utf-8"))
-    matches = lookup(catalog["entries"], args.query)
+    starters = json.loads(STARTERS.read_text(encoding="utf-8")) if STARTERS.exists() else {}
+    matches = lookup(catalog["entries"], starters, args.query)
     for entry in matches:
         print(f'{entry["slug"]}\t{entry["name"]}\t{entry["category"]}\t{entry["sourcePath"]}')
     if not matches:
