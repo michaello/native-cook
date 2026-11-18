@@ -34,9 +34,12 @@ final class ReferenceDraftTests: XCTestCase {
         app.buttons["draft.edit"].tap()
         let radarCell = cell(containing: radar.identifier, in: app)
         let tapeCell = cell(containing: tape.identifier, in: app)
-        let dragStart = radarCell.coordinate(withNormalizedOffset: CGVector(dx: 0.95, dy: 0.5))
-        let dragEnd = tapeCell.coordinate(withNormalizedOffset: CGVector(dx: 0.95, dy: 0.95))
-        dragStart.press(forDuration: 0.2, thenDragTo: dragEnd)
+        let reorder = radarCell.buttons["Reorder Radar Friend Finder"]
+        XCTAssertTrue(reorder.waitForExistence(timeout: 5))
+        let dragStart = reorder.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.5))
+        let distance = tapeCell.frame.maxY - reorder.frame.midY - 10
+        let dragEnd = dragStart.withOffset(CGVector(dx: 0, dy: distance))
+        dragStart.press(forDuration: 0.3, thenDragTo: dragEnd, withVelocity: .default, thenHoldForDuration: 0.3)
         app.buttons["draft.edit"].tap()
         XCTAssertLessThan(cipher.frame.minY, tape.frame.minY)
         XCTAssertLessThan(tape.frame.minY, radar.frame.minY)
